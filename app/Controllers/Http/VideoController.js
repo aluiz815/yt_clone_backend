@@ -70,7 +70,7 @@ class VideoController {
   async show({ params, response }) {
     const video = await Video.findOrFail(params.id);
     await video.load("user", builder => {
-      builder.select(["username", "avatar"]);
+      builder.select(["name", "avatar"]);
     });
     return response.json({ video });
   }

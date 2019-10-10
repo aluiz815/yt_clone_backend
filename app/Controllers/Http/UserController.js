@@ -34,9 +34,9 @@ class UserController {
   }
   async show({ params, response }) {
     const user = await User.findOrFail(params.id);
-    const { name, username, avatar, email } = user;
+    const { name, avatar, email } = user;
     const url = await user.getAvatarUrl({ avatar });
-    return response.json({ name, username, url, email });
+    return response.json({ name, url, email });
   }
   async update({ request, auth, params, response }) {
     const user = await User.findOrFail(params.id);
