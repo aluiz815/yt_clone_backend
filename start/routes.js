@@ -31,3 +31,6 @@ Route.group(() => {
   Route.put("getvideo/:id", "VideoController.update").middleware(["auth"]);
   Route.delete("getvideo/:id", "VideoController.destroy").middleware(["auth"]);
 }).prefix("videos");
+Route.post(":userVideoId/like", "LikeController.store")
+  .prefix("users")
+  .middleware(["auth"]);

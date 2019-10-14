@@ -1,7 +1,6 @@
 "use strict";
 const Helpers = use("Helpers");
 const Video = use("App/Models/Video");
-const User = use("App/Models/User");
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 /** @typedef {import('@adonisjs/framework/src/View')} View */
@@ -83,10 +82,13 @@ class VideoController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async update({ request, params, response }) {
+  async update({ request, params, response,auth }) {
     const video = await Video.findOrFail(params.id);
     if (!video) {
       return response.status(401).json({ msg: "Video does not exists" });
+    }
+    if(video.user_id !== auth.user.id){
+      return response.status(401).json({ msg: "User does not match" });
     }
     const data = request.all();
     video.merge(data);
@@ -102,8 +104,11 @@ class VideoController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async destroy({ params, response }) {
+  async destroy({ params, response,auth }) {
     const video = await Video.findOrFail(params.id);
+    if(video.user_id !== auth.user.id){
+      return response.status(401).json({ msg: "User does not match" });
+    }
     await video.delete();
     return response.json({ msg: "Video deleted" });
   }

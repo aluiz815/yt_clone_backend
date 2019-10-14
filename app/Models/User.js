@@ -28,6 +28,9 @@ class User extends Model {
   videos() {
     return this.hasMany("App/Models/Video");
   }
+  likes() {
+    return this.hasMany("App/Models/Like");
+  }
 }
 
 module.exports = User;

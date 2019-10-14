@@ -1,6 +1,5 @@
 "use strict";
 const User = use("App/Models/User");
-const Video = use("App/Models/Video");
 const Helpers = use("Helpers");
 class UserController {
   async store({ request, response }) {
@@ -34,9 +33,10 @@ class UserController {
   }
   async show({ params, response }) {
     const user = await User.findOrFail(params.id);
-    const { name, avatar, email } = user;
+    const { name, username, email, avatar } = user;
     const url = await user.getAvatarUrl({ avatar });
-    return response.json({ name, url, email });
+    const subscribers = await user.likes().fetch();
+    return response.json({ name, username, email, url, subscribers });
   }
   async update({ request, auth, params, response }) {
     const user = await User.findOrFail(params.id);
