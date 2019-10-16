@@ -36,23 +36,36 @@ class VideoController {
    * @param {Response} ctx.response
    */
   async store({ request, response, auth }) {
+    const user = await auth.getUser();
+    const { id } = user;
     const video = request.file("video", {
       types: ["video"],
       size: "100mb"
     });
-    await video.move(Helpers.tmpPath("uploads/videos"), {
+    await video.move(Helpers.tmpPath(`uploads/videos/${id}`), {
       name: `${new Date().getTime()}.${video.subtype}`
     });
     if (!video.moved()) {
       return video.error();
     }
+    const thumb = request.file("thumb", {
+      types: ["image"],
+      size: "2mb"
+    });
+    await thumb.move(Helpers.tmpPath(`uploads/videos/${id}`), {
+      name: `${new Date().getTime()}.${thumb.subtype}`
+    });
+    if (!thumb.moved()) {
+      return thumb.error();
+    }
     const { title, description } = request.body;
     const videos = await Video.create({
       title,
       description,
-      user_id: auth.user.id
+      user_id: auth.user.id,
+      name: video.fileName,
+      thumb: thumb.fileName
     });
-    videos.name = video.fileName;
     await videos.save();
     return response.json(videos);
   }
@@ -82,12 +95,12 @@ class VideoController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async update({ request, params, response,auth }) {
+  async update({ request, params, response, auth }) {
     const video = await Video.findOrFail(params.id);
     if (!video) {
       return response.status(401).json({ msg: "Video does not exists" });
     }
-    if(video.user_id !== auth.user.id){
+    if (video.user_id !== auth.user.id) {
       return response.status(401).json({ msg: "User does not match" });
     }
     const data = request.all();
@@ -104,9 +117,9 @@ class VideoController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async destroy({ params, response,auth }) {
+  async destroy({ params, response, auth }) {
     const video = await Video.findOrFail(params.id);
-    if(video.user_id !== auth.user.id){
+    if (video.user_id !== auth.user.id) {
       return response.status(401).json({ msg: "User does not match" });
     }
     await video.delete();

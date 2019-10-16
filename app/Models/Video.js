@@ -5,10 +5,13 @@ const Model = use("Model");
 const Env = use("Env");
 class Video extends Model {
   static get computed() {
-    return ["video_url"];
+    return ["video_url", "thumb_url"];
   }
-  getVideoUrl({ name }) {
-    return `${Env.get("APP_URL")}/files/videos/${name}`;
+  getVideoUrl({ name, user_id }) {
+    return `${Env.get("APP_URL")}/files/videos/${user_id}/${name}`;
+  }
+  getThumbUrl({ thumb, user_id }) {
+    return `${Env.get("APP_URL")}/files/videos/${user_id}/${thumb}`;
   }
   user() {
     return this.belongsTo("App/Models/User");

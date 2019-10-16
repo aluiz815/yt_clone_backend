@@ -16,7 +16,7 @@
 /** @type {typeof import('@adonisjs/framework/src/Route/Manager')} */
 const Route = use("Route");
 Route.get("/files/avatar/:file", "FileController.avatar");
-Route.get("/files/videos/:file", "FileController.video");
+Route.get("/files/videos/:id/:file", "FileController.video");
 Route.group(() => {
   Route.post("new", "UserController.store");
   Route.post("login", "UserController.session");

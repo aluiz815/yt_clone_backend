@@ -5,7 +5,9 @@ class FileController {
     return response.download(Helpers.tmpPath(`uploads/avatar/${params.file}`));
   }
   async video({ params, response }) {
-    return response.download(Helpers.tmpPath(`uploads/videos/${params.file}`));
+    return response.download(
+      Helpers.tmpPath(`uploads/videos/${params.id}/${params.file}`)
+    );
   }
 }
 
