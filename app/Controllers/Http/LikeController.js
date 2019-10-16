@@ -42,7 +42,7 @@ class LikeController {
       user_id: userLoggedString
     });
 
-    return response.json({ result });
+    return response.json({ like });
   }
 }
 
