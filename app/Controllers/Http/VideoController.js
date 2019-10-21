@@ -18,12 +18,13 @@ class VideoController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async index({ response }) {
+  async index({ request, response }) {
+    const { page } = request.get();
     const video = await Video.query()
       .with("user", builder => {
         builder.select(["id", "name", "avatar"]);
       })
-      .fetch();
+      .paginate(page, 10);
     return response.json({ video });
   }
 
@@ -96,6 +97,8 @@ class VideoController {
    * @param {Response} ctx.response
    */
   async update({ request, params, response, auth }) {
+    const user = await auth.getUser();
+    const { id } = user;
     const video = await Video.findOrFail(params.id);
     if (!video) {
       return response.status(401).json({ msg: "Video does not exists" });
@@ -103,10 +106,21 @@ class VideoController {
     if (video.user_id !== auth.user.id) {
       return response.status(401).json({ msg: "User does not match" });
     }
-    const data = request.all();
-    video.merge(data);
+    const thumb = request.file("thumb", {
+      types: ["image"],
+      size: "2mb"
+    });
+    await thumb.move(Helpers.tmpPath(`uploads/videos/${id}`), {
+      name: `${new Date().getTime()}.${thumb.subtype}`
+    });
+    if (!thumb.moved()) {
+      return thumb.error();
+    }
+
+    const { title, description } = request.body;
+    video.merge({ title, description, thumb: thumb.fileName });
     await video.save();
-    return response.json({ msg: "Video updated" });
+    return response.json(video);
   }
 
   /**

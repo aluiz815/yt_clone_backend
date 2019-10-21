@@ -17,6 +17,7 @@
 const Route = use("Route");
 Route.get("/files/avatar/:file", "FileController.avatar");
 Route.get("/files/videos/:id/:file", "FileController.video");
+Route.get("/search", "SearchController.index");
 Route.group(() => {
   Route.post("new", "UserController.store");
   Route.post("login", "UserController.session");

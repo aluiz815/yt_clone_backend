@@ -36,7 +36,8 @@ class UserController {
     const { name, username, email, avatar } = user;
     const url = await user.getAvatarUrl({ avatar });
     const subscribers = await user.likes().fetch();
-    return response.json({ name, username, email, url, subscribers });
+    const videos = await user.videos().fetch();
+    return response.json({ name, username, email, url, subscribers, videos });
   }
   async update({ request, auth, params, response }) {
     const user = await User.findOrFail(params.id);

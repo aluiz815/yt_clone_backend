@@ -24,7 +24,7 @@ class LikeController {
     const userLoggedString = userLogged.id.toString();
     const subscribers = await userLogged.likes().fetch();
     const arraySubs = [subscribers];
-    const resultArray = arraySubs.find(obj => obj.like_user_id !== userVideoId);
+    const resultArray = arraySubs.find(obj => (obj.like_user_id = userVideoId));
     if (!userLogged) {
       return response.status(401).json({ msg: "User not logged" });
     }
