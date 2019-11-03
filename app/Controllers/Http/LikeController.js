@@ -22,26 +22,36 @@ class LikeController {
     const userLogged = await auth.getUser();
     const videoUser = await User.findOrFail(userVideoId);
     const userLoggedString = userLogged.id.toString();
-    const subscribers = await userLogged.likes().fetch();
-    const arraySubs = [subscribers];
-    const resultArray = arraySubs.find(obj => (obj.like_user_id = userVideoId));
-    if (!userLogged) {
-      return response.status(401).json({ msg: "User not logged" });
-    }
+    const likes = await userLogged.likes().fetch();
+    const newLikes = JSON.parse(JSON.stringify(likes));
     if (userLoggedString === userVideoId) {
       return response.status(400).json({ msg: "You are the user" });
     }
+    if (!userLogged) {
+      return response.status(401).json({ msg: "User not logged" });
+    }
+
     if (!videoUser) {
       return response.status(400).json({ msg: "User does not exists" });
     }
-    if (resultArray) {
-      return response.status(400).json({ msg: "You are already subscribed" });
+    if (newLikes.length <= 0) {
+      const like = await Like.create({
+        like_user_id: userVideoId,
+        user_id: userLoggedString
+      });
+      return response.json({ like });
+    }
+
+    for (let index = 0; index < newLikes.length; index++) {
+      const element = newLikes[index];
+      if (element.like_user_id === userVideoId) {
+        return response.status(400).json({ msg: "You are already sub" });
+      }
     }
     const like = await Like.create({
       like_user_id: userVideoId,
       user_id: userLoggedString
     });
-
     return response.json({ like });
   }
 }
