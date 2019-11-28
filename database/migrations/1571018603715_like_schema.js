@@ -2,7 +2,7 @@
 
 /** @type {import('@adonisjs/lucid/src/Schema')} */
 const Schema = use("Schema");
-
+//Schema de inscricao em canais
 class LikeSchema extends Schema {
   up() {
     this.create("likes", table => {

@@ -2,7 +2,7 @@
 
 /** @type {import('@adonisjs/lucid/src/Schema')} */
 const Schema = use('Schema')
-
+//Schema de token para recuperacao de senha etc
 class TokensSchema extends Schema {
   up () {
     this.create('tokens', (table) => {

@@ -2,7 +2,7 @@
 
 /** @type {import('@adonisjs/lucid/src/Schema')} */
 const Schema = use("Schema");
-
+//Schema de upload de videos
 class VideoSchema extends Schema {
   up() {
     this.create("videos", table => {

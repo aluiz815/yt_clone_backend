@@ -1,5 +1,7 @@
 "use strict";
+//Utiliza os helpers do adonis
 const Helpers = use("Helpers");
+//Importa o model de Video
 const Video = use("App/Models/Video");
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
@@ -18,8 +20,11 @@ class VideoController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
+  //Metodo para listar video
   async index({ request, response }) {
+    //paginacao
     const { page } = request.get();
+    //busca um video no bd utilizando vericacao para trazer apenas alguns dados
     const video = await Video.query()
       .with("user", builder => {
         builder.select(["id", "name", "avatar"]);
@@ -36,6 +41,7 @@ class VideoController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
+  //Metodo para cadastrar um video, igual do usuario porem muda os dados
   async store({ request, response, auth }) {
     const user = await auth.getUser();
     const { id } = user;
@@ -80,8 +86,11 @@ class VideoController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
+  //Metodo para mostrar um video
   async show({ params, response }) {
+    //procura um video pelo id
     const video = await Video.findOrFail(params.id);
+    //vai no user e recupera o nome da pessoa que cadastrou o video
     await video.load("user", builder => {
       builder.select(["name", "avatar"]);
     });
@@ -96,6 +105,7 @@ class VideoController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
+  //Metodo para atualizar um video
   async update({ request, params, response, auth }) {
     const user = await auth.getUser();
     const { id } = user;
@@ -131,6 +141,7 @@ class VideoController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
+  //Metodo para deletar o video
   async destroy({ params, response, auth }) {
     const video = await Video.findOrFail(params.id);
     if (video.user_id !== auth.user.id) {
