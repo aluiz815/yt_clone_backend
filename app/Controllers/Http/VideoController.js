@@ -24,7 +24,8 @@ class VideoController {
   async index({ request, response }) {
     //paginacao
     const { page } = request.get();
-    //busca um video no bd utilizando vericacao para trazer apenas alguns dados
+    //busca um video no bd utilizando vericacao para trazer apenas alguns dados e ordenando de forma descrescente
+    //utilizando created_at
     const video = await Video.query()
       .with("user", builder => {
         builder.select(["id", "name", "avatar"]);

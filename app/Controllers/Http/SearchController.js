@@ -2,7 +2,8 @@
 //Utiliza o proprio database do adonis
 const Database = use("Database");
 class SearchController {
-  //Metodo de Busca dos videos optimizado
+  //Metodo de Busca dos videos mais recentes de forma optimizada ordenando em ordem crescente
+  //atravez do created_at
    filtro(vet){
        let atual;
         for (let i = 1; i < vet.length; i++) {
