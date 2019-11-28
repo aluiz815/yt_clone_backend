@@ -28,8 +28,8 @@ class VideoController {
     const video = await Video.query()
       .with("user", builder => {
         builder.select(["id", "name", "avatar"]);
-      })
-      .paginate(page, 10);
+      }).orderBy('created_at','desc')
+      .paginate(page, 10)
     return response.json({ video });
   }
 
@@ -93,7 +93,7 @@ class VideoController {
     //vai no user e recupera o nome da pessoa que cadastrou o video
     await video.load("user", builder => {
       builder.select(["name", "avatar"]);
-    });
+    })
     return response.json({ video });
   }
 
